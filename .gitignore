@@ -1,0 +1,11 @@
+# Data files are downloaded by the notebooks, not stored in Git
+data/
+*.db
+
+# Jupyter / Python clutter
+.ipynb_checkpoints/
+__pycache__/
+.DS_Store
+
+# Local tool settings
+.claude/

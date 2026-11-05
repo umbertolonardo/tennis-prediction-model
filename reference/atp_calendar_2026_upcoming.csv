@@ -1,0 +1,5 @@
+name,city,level,surface,start,end,data_pattern
+Stockholm Open,Stockholm,ATP 250,Hard (indoor),2026-11-08,2026-11-14,stockholm
+ATP Finals,Turin,ATP Finals,Hard (indoor),2026-11-15,2026-11-22,^(?:nitto )?(?:atp|tour) finals
+Davis Cup Finals,Bologna,Team event,Hard (indoor),2026-11-24,2026-11-29,
+Next Gen ATP Finals,Reggio Calabria,Next Gen,Hard (indoor),2026-12-09,2026-12-13,next gen

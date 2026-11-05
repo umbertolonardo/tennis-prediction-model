@@ -1,0 +1,5 @@
+# Only for src/kumo_test.py. Keep it in its own environment, with Python 3.11 or newer.
+structured-data-models==0.2.1
+torch==2.15.0
+pandas
+scikit-learn

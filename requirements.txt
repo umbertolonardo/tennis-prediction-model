@@ -1,0 +1,14 @@
+# The app's model file was saved with these versions, so keep them together
+altair==5.0.1
+joblib==1.4.2
+numpy==1.26.4
+openpyxl
+pandas==2.2.2
+scikit-learn==1.5.1
+scipy==1.13.1
+statsmodels==0.14.2
+streamlit==1.37.1
+# Only for the notebooks
+matplotlib
+nbformat
+xlrd

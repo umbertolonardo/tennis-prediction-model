@@ -1,0 +1,60 @@
+name,level,surface,start,last,has_final,winner,stage,played,expected
+Madrid Masters,Masters 1000,Clay,2026-04-22,2026-05-03,True,Jannik Sinner,Final,95,95
+Auckland,ATP 250,Hard,2026-01-12,2026-01-17,True,Jakub Mensik,Final,27,31
+Munich,ATP 500,Clay,2026-04-13,2026-04-19,True,Ben Shelton,Final,31,31
+Queen's Club,ATP 500,Grass,2026-06-15,2026-06-21,True,Francisco Cerundolo,Final,31,31
+Gstaad,ATP 250,Clay,2026-07-13,2026-07-19,True,Stefanos Tsitsipas,Final,27,27
+Bastad,ATP 250,Clay,2026-07-13,2026-07-19,True,Andrey Rublev,Final,27,27
+Kitzbuhel,ATP 250,Clay,2026-07-20,2026-07-25,True,Quentin Halys,Final,27,27
+Stuttgart,ATP 250,Grass,2026-06-08,2026-06-14,True,Ben Shelton,Final,27,27
+Geneva,ATP 250,Clay,2026-05-18,2026-05-23,True,Learner Tien,Final,27,27
+Basel,ATP 500,Hard (indoor),2026-10-26,2026-11-01,True,Valentin Vacherot,Final,31,31
+Tokyo,ATP 500,Hard,2026-09-30,2026-10-06,True,Carlos Alcaraz,Final,31,31
+Hong Kong,ATP 250,Hard,2026-01-05,2026-01-11,True,Alexander Bublik,Final,27,27
+Vienna,ATP 500,Hard (indoor),2026-10-26,2026-11-01,True,Carlos Alcaraz,Final,31,31
+Brisbane,ATP 250,Hard,2026-01-04,2026-01-11,True,Daniil Medvedev,Final,31,31
+Paris Masters,Masters 1000,Hard (indoor),2026-11-02,2026-11-05,False,,Round of 16,45,55
+Marrakech,ATP 250,Clay,2026-03-30,2026-04-05,True,Rafael Jodar,Final,27,27
+Montpellier,ATP 250,Hard (indoor),2026-02-02,2026-02-08,True,Felix Auger-Aliassime,Final,27,27
+Miami Masters,Masters 1000,Hard,2026-03-19,2026-03-29,True,Jannik Sinner,Final,95,95
+Indian Wells Masters,Masters 1000,Hard,2026-03-04,2026-03-15,True,Jannik Sinner,Final,95,95
+Rotterdam,ATP 500,Hard (indoor),2026-02-09,2026-02-15,True,Alex de Minaur,Final,31,31
+Monte Carlo,Masters 1000,Clay,2026-04-05,2026-04-12,True,Jannik Sinner,Final,55,55
+Hamburg,ATP 500,Clay,2026-05-18,2026-05-23,True,Ignacio Buse,Final,31,31
+Rome Masters,Masters 1000,Clay,2026-05-06,2026-05-17,True,Jannik Sinner,Final,95,95
+Washington,ATP 500,Hard,2026-07-27,2026-08-03,True,Taylor Fritz,Final,31,31
+Canada Masters,Masters 1000,Hard,2026-08-02,2026-08-14,True,Ben Shelton,Final,95,95
+Cincinnati Masters,Masters 1000,Hard,2026-08-14,2026-08-24,True,Arthur Fils,Final,95,95
+Dallas,ATP 500,Hard (indoor),2026-02-09,2026-02-15,True,Ben Shelton,Final,31,31
+Barcelona,ATP 500,Clay,2026-04-13,2026-04-19,True,Arthur Fils,Final,31,31
+Umag,ATP 250,Clay,2026-07-13,2026-07-19,True,Daniel Merida,Final,27,27
+'s-Hertogenbosch,ATP 250,Grass,2026-06-08,2026-06-14,True,Kamil Majchrzak,Final,27,27
+Bucharest,ATP 250,Clay,2026-03-31,2026-04-05,True,Mariano Navone,Final,27,27
+Doha,ATP 500,Hard,2026-02-16,2026-02-21,True,Carlos Alcaraz,Final,31,31
+Hangzhou,ATP 250,Hard,2026-09-23,2026-09-29,True,Daniil Medvedev,Final,27,27
+Dubai,ATP 500,Hard,2026-02-23,2026-02-28,True,Daniil Medvedev,Final,31,31
+Lyon,ATP 250,Hard (indoor),2026-10-19,2026-10-25,True,Lorenzo Musetti,Final,27,27
+Delray Beach,ATP 250,Hard,2026-02-16,2026-02-22,True,Sebastian Korda,Final,27,27
+Halle,ATP 500,Grass,2026-06-15,2026-06-21,True,Frances Tiafoe,Final,31,31
+Shanghai,Masters 1000,Hard,2026-10-07,2026-10-18,True,Alejandro Davidovich Fokina,Final,95,95
+Buenos Aires,ATP 250,Clay,2026-02-09,2026-02-15,True,Francisco Cerundolo,Final,27,27
+Roland Garros,Grand Slam,Clay,2026-05-24,2026-06-07,True,Alexander Zverev,Final,127,127
+Wimbledon,Grand Slam,Grass,2026-06-29,2026-07-12,True,Jannik Sinner,Final,127,127
+US Open,Grand Slam,Hard,2026-08-30,2026-09-13,True,Alexander Zverev,Final,127,127
+Australian Open,Grand Slam,Hard,2026-01-18,2026-02-01,True,Carlos Alcaraz,Final,127,127
+Winston-Salem,ATP 250,Hard,2026-08-24,2026-08-30,True,Ignacio Buse,Final,47,47
+Rio de Janeiro,ATP 500,Clay,2026-02-16,2026-02-23,True,Tomas Martin Etcheverry,Final,31,31
+Houston,ATP 250,Clay,2026-03-31,2026-04-05,True,Tommy Paul,Final,27,27
+Estoril,ATP 250,Clay,2026-07-20,2026-07-26,True,Luca Van Assche,Final,27,27
+Eastbourne,ATP 250,Grass,2026-06-22,2026-06-28,True,Zizou Bergs,Final,27,27
+Beijing,ATP 500,Hard,2026-09-30,2026-10-06,True,Novak Djokovic,Final,31,31
+Los Cabos,ATP 250,Hard,2026-07-28,2026-08-02,True,Arthur Gea,Final,27,27
+Brussels,ATP 250,Hard (indoor),2026-10-19,2026-10-25,True,Tallon Griekspoor,Final,27,27
+Chengdu,ATP 250,Hard,2026-09-23,2026-09-29,True,Alejandro Davidovich Fokina,Final,27,27
+Acapulco,ATP 500,Hard,2026-02-24,2026-03-01,True,Flavio Cobolli,Final,31,31
+Mallorca,ATP 250,Grass,2026-06-22,2026-06-27,True,Alejandro Davidovich Fokina,Final,27,27
+Santiago,ATP 250,Clay,2026-02-23,2026-03-02,True,Luciano Darderi,Final,27,27
+Adelaide,ATP 250,Hard,2026-01-12,2026-01-17,True,Tomas Machac,Final,27,27
+Laver Cup,Team event,Hard (indoor),2026-09-25,2026-09-27,False,,Round robin,7,7
+Almaty,ATP 250,Hard (indoor),2026-10-19,2026-10-25,True,Daniil Medvedev,Final,27,27
+United Cup,Team event,Hard,2026-01-02,2026-01-11,True,,Final,25,25
