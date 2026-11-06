@@ -9,11 +9,12 @@ import pandas as pd
 import streamlit as st
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / "src"))
+sys.path[:0] = [str(ROOT / "src"), str(ROOT / "app")]
 from tennis_calendar import FINISHED, LIVE, UPCOMING, WAITING, build_calendar, date_label, load_events, progress_by_level
 from tennis_market import edge, fair_probability, margin, seed_rule_bets
 from tennis_paper import RESULTS, add_bet, load_log, save_log, summarise
 from tennis_predict import LEVELS, ROUNDS, predict_match
+from ui import PLAYER_COLORS, STATUS, apply_style, calendar_banners, hero, scoreboard, season_list
 
 AUTHOR = "Umberto Lo Nardo"
 CALENDAR_EVENTS = ROOT / "app/calendar_events.csv"
@@ -25,7 +26,6 @@ PAPER_LOG = ROOT / "data/paper_trades.csv"
 ENTRIES = {"Direct entry": None, "Qualifier": "Q", "Wildcard": "WC", "Lucky loser": "LL", "Protected ranking": "PR"}
 SEEDS = list(range(0, 33))
 OTHER = "Other tournament"
-CHART_COLORS = ["#2a78d6", "#c2571a"]
 
 st.set_page_config(page_title="Tennis Match Predictor", page_icon="🎾", layout="centered")
 
@@ -57,18 +57,18 @@ def probability_chart(sources):
     data["label"] = data["chance"].map("{:.0%}".format)
     order = [source[0] for source in sources]
     names = [sources[0][2], sources[0][3]]
-    y = alt.Y("source:N", sort=order, title=None, axis=alt.Axis(ticks=False, domain=False, labelLimit=180))
+    y = alt.Y("source:N", sort=order, title=None, axis=alt.Axis(ticks=False, domain=False, labelLimit=180, labelFontSize=13, labelColor="#17261f"))
     bars = alt.Chart(data).mark_bar(size=30, cornerRadius=4).encode(
         x=alt.X("start:Q", scale=alt.Scale(domain=[0, 1]), axis=None),
         x2="end:Q",
         y=y,
-        color=alt.Color("player:N", scale=alt.Scale(domain=names, range=CHART_COLORS),
-                        legend=alt.Legend(title=None, orient="top")),
+        color=alt.Color("player:N", scale=alt.Scale(domain=names, range=PLAYER_COLORS),
+                        legend=alt.Legend(title=None, orient="top", labelFontSize=13, labelColor="#17261f")),
         tooltip=[alt.Tooltip("source:N", title="Who says"), alt.Tooltip("player:N", title="Player"),
                  alt.Tooltip("chance:Q", title="Chance of winning", format=".1%")],
     )
-    labels = alt.Chart(data).mark_text(color="white", fontWeight="bold").encode(x="middle:Q", y=y, text="label:N")
-    return (bars + labels).properties(height=46 * len(sources) + 40)
+    labels = alt.Chart(data).mark_text(color="white", fontWeight="bold", fontSize=14).encode(x="middle:Q", y=y, text="label:N")
+    return (bars + labels).properties(height=46 * len(sources) + 40).configure(font="Barlow").configure_view(stroke=None)
 
 
 def compare_with_bookmakers(rows, probability_a, name_a, name_b):
@@ -94,13 +94,14 @@ def predict_tab(snapshot):
     table = snapshot["players"].set_index("player_id")
     tournaments = snapshot["tournaments"].set_index("tourney_name")
 
-    left, right = st.columns(2)
+    setup = st.container(border=True)
+    left, right = setup.columns(2)
     label = lambda p: player_label(table, p)
     player_a = left.selectbox("Player A", table.index, index=0, format_func=label)
     player_b = right.selectbox("Player B", table.index, index=1, format_func=label)
     name_a, name_b = table.at[player_a, "name"], table.at[player_b, "name"]
 
-    with st.expander("Optional: tournament seeds"):
+    with setup.expander("Optional: tournament seeds"):
         st.caption("At a tournament, the best players get a number called a seed: Seed 1 is the top player in the "
                    "draw. You'll find it next to the name in the draw. If you don't know it, leave “No seed”.")
         left, right = st.columns(2)
@@ -109,20 +110,20 @@ def predict_tab(snapshot):
         entry_a = ENTRIES[left.selectbox(f"{name_a}: how they entered", list(ENTRIES), key="entry_a")]
         entry_b = ENTRIES[right.selectbox(f"{name_b}: how they entered", list(ENTRIES), key="entry_b")]
 
-    tournament = st.selectbox("Tournament", [OTHER] + list(tournaments.index))
+    tournament = setup.selectbox("Tournament", [OTHER] + list(tournaments.index))
     known = tournament != OTHER
     level_codes = list(LEVELS.values())
     surfaces = ["Hard", "Clay", "Grass"]
     default_level = level_codes.index(tournaments.at[tournament, "level"]) if known else 2
     default_surface = tournaments.at[tournament, "surface"] if known else "Hard"
-    columns = st.columns(4)
+    columns = setup.columns(4)
     level = columns[0].selectbox("Level", list(LEVELS), index=default_level, key=f"level_{tournament}")
     surface = columns[1].selectbox(
         "Surface", surfaces, index=surfaces.index(default_surface) if default_surface in surfaces else 0,
         key=f"surface_{tournament}")
     round_name = columns[2].selectbox("Round", list(ROUNDS), index=1)
     best_of = columns[3].selectbox("Best of", [3, 5], index=1 if LEVELS[level] == "G" else 0, key=f"best_{level}")
-    match_date = st.date_input("Match date", value=date.today())
+    match_date = setup.date_input("Match date", value=date.today())
 
     if player_a == player_b:
         st.info("Choose two different players.")
@@ -133,16 +134,11 @@ def predict_tab(snapshot):
         seed_a=seed_a, seed_b=seed_b, entry_a=entry_a, entry_b=entry_b)
     probability_a = result["probability_a"]
 
-    st.divider()
-    st.subheader("Model's view")
-    columns = st.columns(2)
-    columns[0].metric(name_a, f"{100 * probability_a:.1f}%")
-    columns[0].caption(f"Fair odds: **{1 / probability_a:.2f}**")
-    columns[1].metric(name_b, f"{100 * (1 - probability_a):.1f}%")
-    columns[1].caption(f"Fair odds: **{1 / (1 - probability_a):.2f}**")
-    st.caption("Fair odds are the odds with no bookmaker profit, if the model's chance is right.")
     wins_a, wins_b = result["head_to_head"]
-    st.caption(f"Head to head in our data: {wins_a}–{wins_b}. Elo alone gives {name_a} {100 * result['elo_probability_a']:.1f}%.")
+    context = " · ".join(([tournament] if known else []) + [level, surface, round_name, f"Best of {best_of}"])
+    scoreboard([name_a, name_b], probability_a, context,
+               f"Head to head in our data: {wins_a}–{wins_b}. Elo alone gives {name_a} {100 * result['elo_probability_a']:.1f}%.")
+    st.caption("Fair odds are the odds with no bookmaker profit, if the model's chance is right.")
     if result["stale"]:
         st.warning(
             f"Our data ends on {snapshot['last_date'].date()}, so this ignores everything since then, including "
@@ -284,33 +280,34 @@ def calendar_tab():
     for column, level in zip(columns, progress_by_level(calendar)):
         column.metric(level["level"], f"{level['finished']} of {level['total']}")
 
-    for _, event in calendar[calendar["status"] == LIVE].iterrows():
-        st.markdown(f"**🎾 Now playing: {event['name']}** ({event['level']}, {event['surface']})")
-        if event["expected"]:
-            st.progress(event["progress"], text=f"{event['stage']}: {event['played']} of {event['expected']} matches played")
     coming = calendar[calendar["status"] == UPCOMING]
+    next_event, when = None, None
     if len(coming):
         next_event = coming.iloc[0]
         days = (next_event["start"] - today).days
         when = "tomorrow" if days == 1 else f"in {days} days"
-        st.markdown(f"**🗓️ Next: {next_event['name']}**, {next_event['city']}, starts {when} ({date_label(next_event)}).")
+    calendar_banners(calendar[calendar["status"] == LIVE], next_event, when)
     if (calendar["status"] == WAITING).any():
         st.warning(f"Some results are missing, because this calendar was last updated on {fresh_until.day} {fresh_until:%B}.")
 
-    choice = st.selectbox("Show", ["All events", FINISHED, LIVE, UPCOMING])
+    choice = st.radio("Show", ["All events", FINISHED, LIVE, UPCOMING], horizontal=True,
+                      format_func=lambda option: STATUS[option][0] if option in STATUS else option)
     shown = calendar if choice == "All events" else calendar[calendar["status"] == choice]
-    table = pd.DataFrame({
-        "Dates": shown.apply(date_label, axis=1), "Tournament": shown["name"], "Status": shown["status"],
-        "Progress": 100 * shown["progress"], "Winner": shown["winner"].fillna("–"), "Level": shown["level"], "Surface": shown["surface"],
-    })
-    st.dataframe(table, hide_index=True, use_container_width=True, column_config={
-        "Progress": st.column_config.ProgressColumn("Progress", min_value=0, max_value=100, format="%.0f%%", width="small")})
+    if shown.empty:
+        st.info("No events to show.")
+    else:
+        season_list(shown)
     st.caption(f"Events on the ATP calendar. Davis Cup ties before the Finals aren't listed. Results up to "
                f"{fresh_until.day} {fresh_until:%B %Y}, from TennisMyLife. Dates of events still to come are written by "
                "hand from the ATP calendar, so they can change. Progress in a live event counts matches played.")
 
 
 def about_tab(snapshot):
+    st.subheader("Picked the winner, on 12,215 unseen matches")
+    columns = st.columns(3)
+    columns[0].metric("Our model", "66.98%")
+    columns[1].metric("Elo rating", "65.87%")
+    columns[2].metric("ATP ranking", "63.81%")
     st.markdown(f"""
 **Made by {AUTHOR}.**
 
@@ -331,12 +328,13 @@ from tennis-data.co.uk.
 """)
 
 
-st.title("🎾 Tennis Match Predictor")
+apply_style()
 if not SNAPSHOT.exists():
     st.error("The model file is missing. Run `python app/build_snapshot.py` first.")
     st.stop()
 snapshot = load_snapshot()
-st.caption(f"Made by {AUTHOR}. ATP men's singles, with data up to {snapshot['last_date'].date()}.")
+last_date = snapshot["last_date"]
+hero("Tennis Match Predictor", "ATP men's singles", f"Made by {AUTHOR}. Data up to {last_date.day} {last_date:%B %Y}.")
 names = ["Predict a match", "Calendar"] + (["Practice bets"] if SHOW_PRACTICE_BETS else []) + ["About"]
 tabs = dict(zip(names, st.tabs(names)))
 with tabs["Predict a match"]:
