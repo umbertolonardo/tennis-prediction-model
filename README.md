@@ -12,6 +12,7 @@ notebooks/       step-by-step analysis, one notebook per phase
 src/             Elo, feature, model and market code
 app/             the Streamlit app
 reference/       tournament countries, written by hand
+images/          charts shown in this README
 ```
 
 ## Run the app
@@ -53,7 +54,7 @@ Includes main tour, qualifying, Challenger and Futures matches.
 Newer 2026 matches: [TennisMyLife](https://stats.tennismylife.org/tennis-match-database), for personal, educational and non-commercial research use. Its files can't be redistributed, so they aren't in this repository. The Calendar tab uses only a summary of dates and winners, in `app/calendar_events.csv`, and the model file `app/app_snapshot.joblib` holds ratings and statistics calculated from these matches.
 Betting odds: [tennis-data.co.uk](http://www.tennis-data.co.uk).
 
-This is a non-commercial educational project. The match data isn't in this repository, and the values in `app/app_snapshot.joblib` calculated from Sackmann's data stay under CC BY-NC-SA 4.0.
+This is a non-commercial educational project. The match data isn't in this repository, and the values in `app/app_snapshot.joblib` and the charts in `images/` calculated from Sackmann's data stay under CC BY-NC-SA 4.0.
 
 ### Extending the data with TennisMyLife
 `python src/update_data.py` adds the matches after Sackmann's last ones to a separate database, `data/processed/tennis_latest.db`. Among the notebooks, only notebook 12 uses it. The model in the app loads the same matches directly, so it's retrained on them and hasn't been tested on newer matches yet.
@@ -73,6 +74,25 @@ Final test on 12,215 unseen main-tour matches, from 2022 to June 2026:
 | **Final model** | **66.98%** | **0.5929** |
 
 Against Pinnacle's odds on the same 10,375 matches (2022–2025), the model scores 66.57% and 0.5959, while Pinnacle scores 67.71% and 0.5889. A value-betting rule fixed in advance returned -1.22% (95% interval: -5.28% to +3.08%), so **the model shows no proven edge over the market**.
+
+### Results in charts
+These charts come from notebook 13. They only describe the test results, and nothing in the model was changed after looking at them.
+
+**Accuracy by surface:** the model beats the ranking on every surface, and Pinnacle stays ahead on every surface. The model's own scores on hard, clay and grass are within 1 point, so no surface clearly suits it best.
+
+![Accuracy of the ranking, the model and Pinnacle on each surface](images/accuracy_by_surface.png)
+
+**Calibration:** when the model gives a favourite a certain chance, the favourite wins about that often. The largest gap is 2.4 points, in close matches.
+
+<img src="images/calibration.png" alt="Predicted win probability against how often the favourite actually won" width="440">
+
+**Accuracy by rank:** the score depends heavily on how far apart the players are ranked. High scores aren't all skill, because these matches are also the easiest to call.
+
+<img src="images/accuracy_by_rank.png" alt="Model accuracy for each pair of rank groups" width="520">
+
+**Elo over time:** Elo on its own scores 65.87% on the test, close to the full model. Ratings are shown up to June 2026. The chart starts at a rating of 1900, so it hides the first years of each career.
+
+![Elo rating of Federer, Nadal, Djokovic, Sinner and Alcaraz over time](images/elo_over_time.png)
 
 ## Further analysis
 Notebook 09 uses matches up to 2021 only, so the final test stays untouched:
