@@ -2,6 +2,8 @@
 
 Predicting ATP tennis match outcomes using only pre-match information, and testing whether the model can find value against bookmaker odds.
 
+**[Try the app](https://umberto-lonardo-tennis-prediction-model.streamlit.app/)**, with nothing to install.
+
 **Stack:** Python, pandas, SQL (SQLite), scikit-learn
 
 ## Project structure
