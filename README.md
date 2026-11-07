@@ -102,6 +102,10 @@ Notebook 09 uses matches up to 2021 only, so the final test stays untouched:
 - **LASSO:** no better at predicting (log loss 0.5849 for both models), but it shows that Elo replaces the ATP ranking.
 - **Event study of retirements:** compared with the same player's ordinary losses, win probability is 5.49 points lower in the next match (95% interval: -6.71 to -4.22). This isn't proof of a causal effect of injury, and it affects too few matches to improve predictions much.
 
+![Win probability around a retirement, compared with the same player's ordinary losses](images/event_study_retirements.png)
+
+Before a retirement the two groups move together, which supports the comparison. The first version didn't pass this check, so ordinary losses were also matched on their place in a tournament. Notebook 09 explains this, and notebook 13 repeats the result to draw this chart.
+
 Notebook 10 looks for errors in the bookmakers' prices:
 
 - **One bias repeats:** of 63 variables, only seeding adds to Pinnacle's price. Better-seeded players win slightly less than the price suggests, on new years and on the women's tour.
