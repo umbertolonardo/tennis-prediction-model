@@ -29,12 +29,16 @@ python app/build_snapshot.py
 streamlit run app/app.py
 ```
 
-The first time, run notebooks 01 and 05 to download the match data. The app only knows matches up to the last data update, and it says so when that data is old.
+The first time, run notebooks 01 and 05 to download the match data, and `python src/download_tml.py` to download the newer matches. The app only knows matches up to the last data update, and it says so when that data is more than 14 days old.
 
-A Calendar tab shows the 2026 season's progress. To refresh its results:
+A Calendar tab shows the 2026 season's progress. To refresh the model and the calendar:
 
 ```bash
 python src/download_tml.py
+```
+
+```bash
+python app/build_snapshot.py
 ```
 
 ```bash
@@ -46,11 +50,13 @@ The Practice bets tab only appears when the app runs on your own computer.
 ## Data
 Match data: created by Jeff Sackmann (`tennis_atp`), via the archive mirror [tennis-sackmann-archive](https://github.com/Aneeshers/tennis-sackmann-archive) (CC BY-NC-SA 4.0).
 Includes main tour, qualifying, Challenger and Futures matches.
-Newer 2026 matches: [TennisMyLife](https://stats.tennismylife.org/tennis-match-database), for personal, educational and non-commercial research use. Its files can't be redistributed, so they aren't in this repository. The Calendar tab uses only a summary of dates and winners, in `app/calendar_events.csv`.
+Newer 2026 matches: [TennisMyLife](https://stats.tennismylife.org/tennis-match-database), for personal, educational and non-commercial research use. Its files can't be redistributed, so they aren't in this repository. The Calendar tab uses only a summary of dates and winners, in `app/calendar_events.csv`, and the model file `app/app_snapshot.joblib` holds ratings and statistics calculated from these matches.
 Betting odds: [tennis-data.co.uk](http://www.tennis-data.co.uk).
 
+This is a non-commercial educational project. The match data isn't in this repository, and the values in `app/app_snapshot.joblib` calculated from Sackmann's data stay under CC BY-NC-SA 4.0.
+
 ### Extending the data with TennisMyLife
-`python src/update_data.py` adds the matches after Sackmann's last ones to a separate database, `data/processed/tennis_latest.db`. Only notebook 12 uses it. The earlier notebooks and the model in the app don't.
+`python src/update_data.py` adds the matches after Sackmann's last ones to a separate database, `data/processed/tennis_latest.db`. Among the notebooks, only notebook 12 uses it. The model in the app loads the same matches directly, so it's retrained on them and hasn't been tested on newer matches yet.
 
 - **Added:** 1,352 main-tour matches from June to 5 November 2026, plus Challenger and qualifying matches for the ratings.
 - **Past unchanged:** all 78,876 earlier matches keep exactly the same values.

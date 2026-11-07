@@ -1,6 +1,5 @@
 """Score a future match with the final model, using a saved snapshot of everything known so far."""
 import math
-from pathlib import Path
 
 import joblib
 import numpy as np
@@ -11,6 +10,7 @@ from tennis_domain_features import DOMAIN_GROUPS, build_domain_features, tournam
 from tennis_elo import combined_difference, ratings_on_day, run_elo, win_probability
 from tennis_features import FEATURE_GROUPS, build_features, match_record
 from tennis_models import INTERACTIONS, add_interactions, fit_both_views, logistic_model, predict_winner_probability
+from tennis_tml import link_players, players_with_new
 
 ELO_SETTINGS = dict(k=28, inactivity=0.3, new_player_boost=1.0)
 ELO_WEIGHT = 0.6
@@ -34,8 +34,8 @@ ROUNDS = {"First round": "R64", "Round of 32": "R32", "Round of 16": "R16", "Qua
 
 def build_snapshot(raw_dir, tournament_info_path, out_path):
     """Run the whole pipeline on all data, train the final model, and save the result."""
-    matches = load_all_matches(raw_dir)
-    players = pd.read_csv(Path(raw_dir) / "atp_players.csv", low_memory=False)
+    matches = load_all_matches(raw_dir, include_tml=True)
+    players = players_with_new(raw_dir, link_players(raw_dir))
     tournament_info = pd.read_csv(tournament_info_path)
 
     ratings, elo_state = run_elo(matches, return_state=True, **ELO_SETTINGS)
@@ -61,8 +61,10 @@ def build_snapshot(raw_dir, tournament_info_path, out_path):
     table["name"] = (table["name_first"].fillna("") + " " + table["name_last"].fillna("")).str.strip()
     table["rank"] = table["player_id"].map(latest["rank"])
     table["points"] = table["player_id"].map(latest["points"])
+    table["rank_day"] = table["player_id"].map(latest["day"])
     table["dob"] = pd.to_datetime(table["dob"].astype("Int64").astype(str), format="%Y%m%d", errors="coerce")
-    table = table.sort_values(["rank", "name"], na_position="last").reset_index(drop=True)
+    # A few players have two ids, so the list keeps the one with the best recent rank
+    table = table.sort_values(["rank", "name"], na_position="last").drop_duplicates("name").reset_index(drop=True)
     active = set(table["player_id"])
 
     # Keep only what future matches can need, so the file stays small

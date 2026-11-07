@@ -26,18 +26,26 @@ PAPER_LOG = ROOT / "data/paper_trades.csv"
 ENTRIES = {"Direct entry": None, "Qualifier": "Q", "Wildcard": "WC", "Lucky loser": "LL", "Protected ranking": "PR"}
 SEEDS = list(range(0, 33))
 OTHER = "Other tournament"
+OLD_RANK_DAYS = 30
 
 st.set_page_config(page_title="Tennis Match Predictor", page_icon="🎾", layout="centered")
 
 
 @st.cache_resource
-def load_snapshot():
+def load_snapshot(file_changed):
+    """Reloaded when the file is updated."""
     return joblib.load(SNAPSHOT)
 
 
-def player_label(table, player):
+def player_label(table, player, last_day):
+    """A rank is only known from a player's last match, so an old one shows its month."""
     row = table.loc[player]
-    return f"{row['name']} (#{int(row['rank'])})" if pd.notna(row["rank"]) else row["name"]
+    if pd.isna(row["rank"]):
+        return row["name"]
+    if last_day - row["rank_day"] > OLD_RANK_DAYS:
+        month = pd.Timestamp("1970-01-01") + pd.Timedelta(days=int(row["rank_day"]))
+        return f"{row['name']} (#{int(row['rank'])} in {month:%b %Y})"
+    return f"{row['name']} (#{int(row['rank'])})"
 
 
 def seed_choice(column, label, key):
@@ -96,7 +104,7 @@ def predict_tab(snapshot):
 
     setup = st.container(border=True)
     left, right = setup.columns(2)
-    label = lambda p: player_label(table, p)
+    label = lambda p: player_label(table, p, snapshot["last_day"])
     player_a = left.selectbox("Player A", table.index, index=0, format_func=label)
     player_b = right.selectbox("Player B", table.index, index=1, format_func=label)
     name_a, name_b = table.at[player_a, "name"], table.at[player_b, "name"]
@@ -316,15 +324,17 @@ serve and return, recent form, fatigue and past meetings. It learned from {snaps
 since 2005.
 
 **How good it is:** on 12,215 matches it had never seen (2022 to June 2026), it picked the winner 66.98% of the time.
-That beats a simple strength rating called Elo (65.87%) and the ATP ranking (63.81%).
+That beats a simple strength rating called Elo (65.87%) and the ATP ranking (63.81%). On 1,253 newer matches (June to
+November 2026) it scored 65.28%. The version you're using was then retrained with those matches too, so it hasn't been
+tested on anything newer yet.
 
 **What it can't do:** it doesn't beat the bookmakers. On the same 10,375 matches, Pinnacle was right 67.71% of the time
 and the model 66.57%. It also knows nothing about news, injuries or anything after {snapshot['last_date'].date()}.
 
 **Not betting advice.** This is a student project, built to learn. Please don't use it to bet real money.
 
-Match data by Jeff Sackmann (CC BY-NC-SA 4.0). Calendar results by TennisMyLife, for non-commercial use. Betting odds
-from tennis-data.co.uk.
+Match data by Jeff Sackmann (CC BY-NC-SA 4.0). Matches since June 2026 and calendar results by TennisMyLife, for
+non-commercial use. Betting odds from tennis-data.co.uk.
 """)
 
 
@@ -332,7 +342,7 @@ apply_style()
 if not SNAPSHOT.exists():
     st.error("The model file is missing. Run `python app/build_snapshot.py` first.")
     st.stop()
-snapshot = load_snapshot()
+snapshot = load_snapshot(SNAPSHOT.stat().st_mtime)
 last_date = snapshot["last_date"]
 hero("Tennis Match Predictor", "ATP men's singles", f"Made by {AUTHOR}. Data up to {last_date.day} {last_date:%B %Y}.")
 names = ["Predict a match", "Calendar"] + (["Practice bets"] if SHOW_PRACTICE_BETS else []) + ["About"]

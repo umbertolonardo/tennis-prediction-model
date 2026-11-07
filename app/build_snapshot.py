@@ -1,4 +1,4 @@
-"""Rebuild the file the app reads. Run this after adding new match data:
+"""Rebuild the file the app reads, after running src/download_tml.py:
 
     python app/build_snapshot.py
 """
