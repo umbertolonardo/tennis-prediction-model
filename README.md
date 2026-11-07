@@ -99,12 +99,4 @@ Notebook 12 is a one-time test on 1,253 main-tour matches from June to November 
 - **Market, no:** on 1,202 matches, the market average scores 0.6153 and the model 0.6221 (gain −0.0068, 95% interval: −0.0165 to +0.0027). Pinnacle has no prices in this period.
 - **Betting, not shown:** the rule at Bet365 returned +0.81% on 426 bets (95% interval: −11.66% to +13.91%).
 
-## Progress
-- [x] Phase 0 – Setup
-- [x] Phase 1 – Understand the data
-- [x] Phase 2 – SQL database
-- [x] Phase 3 – Exploration with SQL
-- [x] Phase 4 – Feature engineering (Elo, form, head-to-head)
-- [x] Phase 5 – Modelling
-- [x] Phase 6 – Evaluation vs bookmakers & backtest
-- [ ] Phase 7 – Presentation
+
